@@ -105,7 +105,7 @@ class LfmItem
 
     public function time()
     {
-        return $this->lfm->lastModified();
+        return ''; //$this->lfm->lastModified();
     }
 
     public function thumbUrl()

@@ -14,7 +14,7 @@ class DeleteController extends LfmController
      */
     public function getDelete()
     {
-        $item_names = request('items');
+        $item_names = $this->helper->request('items');
         $errors = [];
 
         foreach ($item_names as $name_to_delete) {

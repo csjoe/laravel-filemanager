@@ -3,6 +3,7 @@
 namespace UniSharp\LaravelFilemanager;
 
 use Illuminate\Support\Facades\Storage;
+use SebastianBergmann\CodeCoverage\Report\PHP;
 
 class LfmStorageRepository implements RepositoryContract
 {
@@ -20,7 +21,12 @@ class LfmStorageRepository implements RepositoryContract
     public function __call($function_name, $arguments)
     {
         // TODO: check function exists
-        return $this->disk->$function_name($this->path, ...$arguments);
+        try {
+          return $this->disk->$function_name($this->path, ...$arguments);
+        } catch (\Exception $exception) {
+          //error_log($exception->getMessage());
+          return '';
+        }
     }
 
     public function rootPath()
@@ -46,9 +52,9 @@ class LfmStorageRepository implements RepositoryContract
 
     public function makeDirectory()
     {
-        $this->disk->makeDirectory($this->path, ...func_get_args());
-
-        $this->disk->setVisibility($this->path, 'public');
+        $this->path = $this->path . "/";
+        $this->disk->makeDirectory( $this->path, ...func_get_args());
+        $this->disk->setVisibility( $this->path, 'public');
     }
 
     public function extension()

@@ -29,7 +29,22 @@ class Lfm
 
     public function input($key)
     {
-        return $this->translateFromUtf8($this->request->input($key));
+        return isset($_REQUEST[$key]) ? $this->translateFromUtf8($_REQUEST[$key]) : '';
+    }
+
+    public function request($key)
+    {
+        return isset($_REQUEST[$key]) ? $_REQUEST[$key] : null;
+    }
+
+    public function request_only($keys)
+    {
+        $res = [];
+        foreach ($keys as $key) {
+            $res[$key] = $this->request[$key];
+        }
+
+        return $res;
     }
 
     public function config($key)
@@ -218,6 +233,7 @@ class Lfm
      */
     public function isRunningOnWindows()
     {
+        return false;
         return strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
     }
 

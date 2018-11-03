@@ -97,7 +97,7 @@ class LfmPath
     public function folders()
     {
         $all_folders = array_map(function ($directory_path) {
-            return $this->pretty($directory_path);
+            return $this->prettyFolder($directory_path);
         }, $this->storage->directories($this));
 
         $folders = array_filter($all_folders, function ($directory) {
@@ -123,6 +123,14 @@ class LfmPath
             'helper' => $this->helper
         ]);
     }
+
+  public function prettyFolder($item_path)
+  {
+    return Container::getInstance()->makeWith(LfmItem::class, [
+      'lfm' => (clone $this)->setName($this->helper->getNameFromPath($item_path)),
+      'helper' => $this->helper
+    ]);
+  }
 
     public function delete()
     {
@@ -216,7 +224,7 @@ class LfmPath
     }
 
     // Upload section
-    public function upload($file)
+    public function upload($file, $working_dir = '')
     {
         $this->uploadValidator($file);
         $new_file_name = $this->getNewName($file);
@@ -313,6 +321,7 @@ class LfmPath
 
         // generate cropped image content
         $image_path = $this->setName($file_name)->thumb(true)->path('absolute');
+        $image_path = sys_get_temp_dir() . "/" . $file_name;
         $image = Image::make($original_image->get())
             ->fit(config('lfm.thumb_img_width', 200), config('lfm.thumb_img_height', 200))
             ->save($image_path);
